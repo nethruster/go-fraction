@@ -84,3 +84,17 @@ func TestEquals(t *testing.T) {
 		t.Fatal("expected both fractions (0/1) to be equal, got not equal")
 	}
 }
+
+func TestAdd(t *testing.T) {
+	f1, _ := fraction.New(6, 36)
+	f2, _ := fraction.New(14, 18)
+	compare(t, f1.Add(f2), 17, 18)
+
+	f1, _ = fraction.New(26, 33)
+	f2, _ = fraction.New(49, -27)
+	compare(t, f1.Add(f2), -305, 297)
+
+	f1, _ = fraction.New(49, 42)
+	f2, _ = fraction.New(0, -29)
+	compare(t, f1.Add(f2), 7, 6)
+}

@@ -8,8 +8,7 @@ type Fraction struct {
 }
 
 type integer interface {
-	int | int8 | int16 | int32 | int64 |
-		uint | uint8 | uint16 | uint32 | uint64
+	int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64
 }
 
 var (
@@ -35,19 +34,20 @@ func New[T, K integer](numerator T, denominator K) (Fraction, error) {
 		d *= -1
 		n *= -1
 	}
-
-	gcf := n
-	if gcf < 0 {
-		gcf *= -1
-	}
-	for tmp := d; tmp != 0; {
-		gcf, tmp = tmp, gcf%tmp
-	}
+	gcf := gcd(n, d)
 
 	return Fraction{
 		numerator:   n / gcf,
 		denominator: d / gcf,
 	}, nil
+}
+
+func (f1 Fraction) Add(f2 Fraction) Fraction {
+	m := lcm(f1.denominator, f2.denominator)
+	return Fraction{
+		numerator:   f1.numerator*(m/f1.denominator) + f2.numerator*(m/f2.denominator),
+		denominator: m,
+	}
 }
 
 func (f1 Fraction) Equal(f2 Fraction) bool {
@@ -60,4 +60,29 @@ func (f1 Fraction) Numerator() int64 {
 
 func (f1 Fraction) Denominator() int64 {
 	return f1.denominator
+}
+
+func gcd(n1, n2 int64) int64 {
+	n1 = abs(n1)
+	for n2 != 0 {
+		n1, n2 = n2, n1%n2
+	}
+	return n1
+}
+
+func lcm(n1, n2 int64) int64 {
+	n1 = abs(n1)
+	n2 = abs(n2)
+	// Put the largest number in n2 because it's divided first, avoiding overflows in some cases
+	if n1 > n2 {
+		n1, n2 = n2, n1
+	}
+	return n1 * (n2 / gcd(n1, n2))
+}
+
+func abs[T integer](n T) T {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
