@@ -50,10 +50,14 @@ func New[T, K integer](numerator T, denominator K) (Fraction, error) {
 	}, nil
 }
 
-func (f Fraction) Numerator() int64 {
-	return f.numerator
+func (f1 Fraction) Equal(f2 Fraction) bool {
+	return f1.numerator == f2.numerator && f1.denominator == f2.denominator
 }
 
-func (f Fraction) Denominator() int64 {
-	return f.denominator
+func (f1 Fraction) Numerator() int64 {
+	return f1.numerator
+}
+
+func (f1 Fraction) Denominator() int64 {
+	return f1.denominator
 }

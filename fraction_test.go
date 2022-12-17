@@ -67,20 +67,20 @@ func TestNewSimplify(t *testing.T) {
 	compare(t, f, 0, 1)
 }
 
-// func TestEquals(t *testing.T) {
-// 	f1, _ := fraction.New(134, 7)
-// 	f3, _ := fraction.New(54, 13)
+func TestEquals(t *testing.T) {
+	f1, _ := fraction.New(-19, 27)
+	f2, _ := fraction.New(57, -81)
+	f3, _ := fraction.New(-57, -81)
+	if !f1.Equal(f2) {
+		t.Fatal("expected both fractions (-19/27) to be equal, got not equal")
+	}
+	if f1.Equal(f3) {
+		t.Fatal("expected fraction -19/27 not to be equal to 19/27, got equal")
+	}
 
-// 	if !f1.Equals(f1) {
-// 		t.Fatal("f1 shold be equal to itself.")
-// 	}
-
-// }
-
-// func TestAdd(t *testing.T) {
-// 	f1, _ := fraction.New(134, 7)
-// 	f2, _ := fraction.New(54, 13)}
-
-// 	result := f1.Add(f2)
-
-// }
+	f1, _ = fraction.New(0, 23)
+	f2, _ = fraction.New(0, 2)
+	if !f1.Equal(f2) {
+		t.Fatal("expected both fractions (0/1) to be equal, got not equal")
+	}
+}
