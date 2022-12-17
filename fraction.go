@@ -62,6 +62,12 @@ func (f1 Fraction) Add(f2 Fraction) Fraction {
 	}
 }
 
+// Subtract subtracts both fractions and returns the result.
+func (f1 Fraction) Subtract(f2 Fraction) Fraction {
+	f2.numerator *= -1
+	return f1.Add(f2)
+}
+
 // Equal compares the value of both fractions, returning true if they are
 // equals, and false otherwise.
 func (f1 Fraction) Equal(f2 Fraction) bool {

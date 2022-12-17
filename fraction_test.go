@@ -98,3 +98,21 @@ func TestAdd(t *testing.T) {
 	f2, _ = fraction.New(0, -29)
 	compare(t, f1.Add(f2), 7, 6)
 }
+
+func TestSubtract(t *testing.T) {
+	f1, _ := fraction.New(6, 36)
+	f2, _ := fraction.New(14, 18)
+	compare(t, f1.Subtract(f2), -11, 18)
+
+	f1, _ = fraction.New(26, 33)
+	f2, _ = fraction.New(-49, 27)
+	compare(t, f1.Subtract(f2), 773, 297)
+
+	f1, _ = fraction.New(49, 42)
+	f2, _ = fraction.New(0, -29)
+	compare(t, f1.Subtract(f2), 7, 6)
+
+	f1, _ = fraction.New(-12, 22)
+	f2, _ = fraction.New(47, -5)
+	compare(t, f1.Subtract(f2), 487, 55)
+}
