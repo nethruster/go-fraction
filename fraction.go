@@ -15,10 +15,6 @@ type integer interface {
 	int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64
 }
 
-type float interface {
-	float32 | float64
-}
-
 var (
 	// ErrDivideByZero is returned when trying to divide by a fraction with a value of 0.
 	ErrDivideByZero = errors.New("denominator cannot be zero")
@@ -67,6 +63,8 @@ func (f1 Fraction) Add(f2 Fraction) Fraction {
 }
 
 // Divide divides both fractions and returns the result.
+//
+// It returns ErrDivideByZero if it tries to divide by a fraction with value 0.
 func (f1 Fraction) Divide(f2 Fraction) (Fraction, error) {
 	f, err := New(f1.numerator*f2.denominator, f1.denominator*f2.numerator)
 	if err != nil {
