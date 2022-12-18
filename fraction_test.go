@@ -150,3 +150,18 @@ func TestDivide(t *testing.T) {
 	fatalIfErr(t, err)
 	compare(t, result, -128, 9)
 }
+
+func TestFloat64(t *testing.T) {
+	f, _ := fraction.New(49, 14)
+	if f.Float64() != 3.5 {
+		t.Fatalf("expected 3.5, got %v", f.Float64())
+	}
+	f, _ = fraction.New(0, -27)
+	if f.Float64() != 0 {
+		t.Fatalf("expected 0, got %v", f.Float64())
+	}
+	f, _ = fraction.New(8, -64)
+	if f.Float64() != -0.125 {
+		t.Fatalf("expected -0.125, got %v", f.Float64())
+	}
+}

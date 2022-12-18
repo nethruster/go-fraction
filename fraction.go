@@ -15,12 +15,14 @@ type integer interface {
 	int | int8 | int16 | int32 | int64 | uint | uint8 | uint16 | uint32 | uint64
 }
 
+type float interface {
+	float32 | float64
+}
+
 var (
-	// ErrDivideByZero is returned when trying to divide by a fraction with a
-	// value of 0.
+	// ErrDivideByZero is returned when trying to divide by a fraction with a value of 0.
 	ErrDivideByZero = errors.New("denominator cannot be zero")
-	// ErrZeroDenominator is returned when trying to create a new fraction with
-	// 0 as a denominator.
+	// ErrZeroDenominator is returned when trying to create a new fraction with 0 as a denominator.
 	ErrZeroDenominator = errors.New("denominator cannot be zero")
 
 	// zeroValue is the simplified representation of a fraction with value 0.
@@ -32,8 +34,7 @@ var (
 
 // New creates a new fraction with the given numerator and denominator.
 //
-// It always simplifies the fraction. It returns ErrZeroDenominator if the
-// value of the denominator is 0.
+// It always simplifies the fraction. It returns ErrZeroDenominator if the value of the denominator is 0.
 func New[T, K integer](numerator T, denominator K) (Fraction, error) {
 	if denominator == 0 {
 		return zeroValue, ErrZeroDenominator
@@ -74,8 +75,7 @@ func (f1 Fraction) Divide(f2 Fraction) (Fraction, error) {
 	return f, err
 }
 
-// Equal compares the value of both fractions, returning true if they are
-// equals, and false otherwise.
+// Equal compares the value of both fractions, returning true if they are equals, and false otherwise.
 func (f1 Fraction) Equal(f2 Fraction) bool {
 	return f1.numerator == f2.numerator && f1.denominator == f2.denominator
 }
@@ -90,6 +90,11 @@ func (f1 Fraction) Multiply(f2 Fraction) Fraction {
 func (f1 Fraction) Subtract(f2 Fraction) Fraction {
 	f2.numerator *= -1
 	return f1.Add(f2)
+}
+
+// Float64 returns the value of the fraction as a float64.
+func (f1 Fraction) Float64() float64 {
+	return float64(f1.numerator) / float64(f1.denominator)
 }
 
 // Denominator returns the fraction denominator.
@@ -110,8 +115,7 @@ func abs[T integer](n T) T {
 	return n
 }
 
-// gcd returns the greatest common divisor of the two numbers. It assumes that
-// both numbers are positive integers.
+// gcd returns the greatest common divisor of the two numbers. It assumes that both numbers are positive integers.
 func gcd(n1, n2 int64) int64 {
 	for n2 != 0 {
 		n1, n2 = n2, n1%n2
@@ -119,8 +123,7 @@ func gcd(n1, n2 int64) int64 {
 	return n1
 }
 
-// lcm returns the least common multiple of the two numbers. It assumes that
-// both numbers are positive integers.
+// lcm returns the least common multiple of the two numbers. It assumes that both numbers are positive integers.
 func lcm(n1, n2 int64) int64 {
 	// Put the largest number in n2 because it's divided first, avoiding overflows in some cases
 	if n1 > n2 {
