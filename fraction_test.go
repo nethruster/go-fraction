@@ -130,3 +130,23 @@ func TestMultiply(t *testing.T) {
 	f2, _ = fraction.New(6, -16)
 	compare(t, f1.Multiply(f2), -2, 1)
 }
+
+func TestDivide(t *testing.T) {
+	f1, _ := fraction.New(49, 14)
+	f2, _ := fraction.New(7, 15)
+	result, err := f1.Divide(f2)
+	fatalIfErr(t, err)
+	compare(t, result, 15, 2)
+
+	f1, _ = fraction.New(26, 33)
+	f2, _ = fraction.New(0, 27)
+	if _, err = f1.Divide(f2); err != fraction.ErrDivideByZero {
+		t.Fatalf("expected ErrDivideByZero, got %v", err)
+	}
+
+	f1, _ = fraction.New(48, 9)
+	f2, _ = fraction.New(6, -16)
+	result, err = f1.Divide(f2)
+	fatalIfErr(t, err)
+	compare(t, result, -128, 9)
+}

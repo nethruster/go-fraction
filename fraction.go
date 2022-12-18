@@ -16,6 +16,9 @@ type integer interface {
 }
 
 var (
+	// ErrDivideByZero is returned when trying to divide by a fraction with a
+	// value of 0.
+	ErrDivideByZero = errors.New("denominator cannot be zero")
 	// ErrZeroDenominator is returned when trying to create a new fraction with
 	// 0 as a denominator.
 	ErrZeroDenominator = errors.New("denominator cannot be zero")
@@ -60,6 +63,15 @@ func (f1 Fraction) Add(f2 Fraction) Fraction {
 		numerator:   f1.numerator*(m/f1.denominator) + f2.numerator*(m/f2.denominator),
 		denominator: m,
 	}
+}
+
+// Divide divides both fractions and returns the result.
+func (f1 Fraction) Divide(f2 Fraction) (Fraction, error) {
+	f, err := New(f1.numerator*f2.denominator, f1.denominator*f2.numerator)
+	if err != nil {
+		err = ErrDivideByZero
+	}
+	return f, err
 }
 
 // Equal compares the value of both fractions, returning true if they are
