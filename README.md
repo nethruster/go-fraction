@@ -1,4 +1,4 @@
-# go-fraction
+# 📚 go-fraction
 [![Go Reference](https://pkg.go.dev/badge/github.com/nethruster/go-fraction.svg)](https://pkg.go.dev/github.com/nethruster/go-fraction)
 
 go-fractions is a Go library for working with fractions. It provides a
@@ -6,7 +6,7 @@ go-fractions is a Go library for working with fractions. It provides a
 performing operations on fractions such as addition, subtraction,
 multiplication, and division.
 
-## Usage
+## 🔨 Usage
 To use go-fractions, import the package in your Go code:
 
 ```go
@@ -36,11 +36,13 @@ You can also convert a fraction to a float using the Float64 function:
 floatValue := f1.Float64() // 0.5
 ```
 
-## Documentation
+## 📜 Documentation
 For more detailed documentation and a full list of functions, see the
 [reference page](https://pkg.go.dev/github.com/nethruster/go-fraction).
 
-## Contributing
+## 🤝 Contributing
 We welcome contributions to go-fractions. If you have an idea for a new
 feature or a bug fix, please open an issue on the
 [issues page](https://github.com/nethruster/go-fraction/issues).
+
+🎉 Thank you for considering contributing to go-fractions!
