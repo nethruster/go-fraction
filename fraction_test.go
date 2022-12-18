@@ -116,3 +116,17 @@ func TestSubtract(t *testing.T) {
 	f2, _ = fraction.New(47, -5)
 	compare(t, f1.Subtract(f2), 487, 55)
 }
+
+func TestMultiply(t *testing.T) {
+	f1, _ := fraction.New(49, 14)
+	f2, _ := fraction.New(7, 15)
+	compare(t, f1.Multiply(f2), 49, 30)
+
+	f1, _ = fraction.New(26, 33)
+	f2, _ = fraction.New(0, 27)
+	compare(t, f1.Multiply(f2), 0, 1)
+
+	f1, _ = fraction.New(48, 9)
+	f2, _ = fraction.New(6, -16)
+	compare(t, f1.Multiply(f2), -2, 1)
+}

@@ -62,16 +62,27 @@ func (f1 Fraction) Add(f2 Fraction) Fraction {
 	}
 }
 
+// Equal compares the value of both fractions, returning true if they are
+// equals, and false otherwise.
+func (f1 Fraction) Equal(f2 Fraction) bool {
+	return f1.numerator == f2.numerator && f1.denominator == f2.denominator
+}
+
+// Multiply multiplies both fractions and returns the result.
+func (f1 Fraction) Multiply(f2 Fraction) Fraction {
+	f, _ := New(f1.numerator*f2.numerator, f1.denominator*f2.denominator)
+	return f
+}
+
 // Subtract subtracts both fractions and returns the result.
 func (f1 Fraction) Subtract(f2 Fraction) Fraction {
 	f2.numerator *= -1
 	return f1.Add(f2)
 }
 
-// Equal compares the value of both fractions, returning true if they are
-// equals, and false otherwise.
-func (f1 Fraction) Equal(f2 Fraction) bool {
-	return f1.numerator == f2.numerator && f1.denominator == f2.denominator
+// Denominator returns the fraction denominator.
+func (f1 Fraction) Denominator() int64 {
+	return f1.denominator
 }
 
 // Numerator returns the fraction numerator.
@@ -79,9 +90,12 @@ func (f1 Fraction) Numerator() int64 {
 	return f1.numerator
 }
 
-// Denominator returns the fraction denominator.
-func (f1 Fraction) Denominator() int64 {
-	return f1.denominator
+// abs returns the absolute value of an integer.
+func abs[T integer](n T) T {
+	if n < 0 {
+		return -n
+	}
+	return n
 }
 
 // gcd returns the greatest common divisor of the two numbers. It assumes that
@@ -101,12 +115,4 @@ func lcm(n1, n2 int64) int64 {
 		n1, n2 = n2, n1
 	}
 	return n1 * (n2 / gcd(n1, n2))
-}
-
-// abs returns the absolute value of an integer.
-func abs[T integer](n T) T {
-	if n < 0 {
-		return -n
-	}
-	return n
 }
