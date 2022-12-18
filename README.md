@@ -18,15 +18,15 @@ You can create a new fraction using the `New` function
 ```go
 f1, err := fraction.New(1,2) // 1/2, nil
 f2, err := fraction.New(2,3) // 2/3, nil
-_, err := fraction.New(1,0) // ErrZeroDenominator
+_, err := fraction.New(1,0)  // ErrZeroDenominator
 ```
 
 You can perform operations on fractions using the provided functions:
 
 ```go
-f3 := f1.Add(f2) // 7/6
-f4 := f1.Subtract(f2) // -1/6
-f5 := f1.Multiply(f2) // 1/3
+f3 := f1.Add(f2)         // 7/6
+f4 := f1.Subtract(f2)    // -1/6
+f5 := f1.Multiply(f2)    // 1/3
 f6, err := f1.Divide(f2) // 3/4, nil
 ```
 
