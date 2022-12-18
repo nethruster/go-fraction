@@ -1,6 +1,7 @@
 package fraction_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/nethruster/go-fraction"
@@ -163,5 +164,71 @@ func TestFloat64(t *testing.T) {
 	f, _ = fraction.New(8, -64)
 	if f.Float64() != -0.125 {
 		t.Fatalf("expected -0.125, got %v", f.Float64())
+	}
+}
+
+func TestFromFloat64(t *testing.T) {
+	f, err := fraction.FromFloat64(0)
+	fatalIfErr(t, err)
+	compare(t, f, 0, 1)
+
+	f, err = fraction.FromFloat64(-0)
+	fatalIfErr(t, err)
+	compare(t, f, 0, 1)
+
+	f, err = fraction.FromFloat64(1)
+	fatalIfErr(t, err)
+	compare(t, f, 1, 1)
+
+	f, err = fraction.FromFloat64(-1)
+	fatalIfErr(t, err)
+	compare(t, f, -1, 1)
+
+	f, err = fraction.FromFloat64(1.1)
+	fatalIfErr(t, err)
+	compare(t, f, 11, 10)
+
+	f, err = fraction.FromFloat64(-1.1)
+	fatalIfErr(t, err)
+	compare(t, f, -11, 10)
+
+	f, err = fraction.FromFloat64(4.5e10)
+	fatalIfErr(t, err)
+	compare(t, f, 45000000000, 1)
+
+	f, err = fraction.FromFloat64(4.5e-10)
+	fatalIfErr(t, err)
+	compare(t, f, 9, 20000000000)
+
+	f, err = fraction.FromFloat64(-4.5e10)
+	fatalIfErr(t, err)
+	compare(t, f, -45000000000, 1)
+
+	f, err = fraction.FromFloat64(-4.5e-10)
+	fatalIfErr(t, err)
+	compare(t, f, -9, 20000000000)
+
+	f, err = fraction.FromFloat64(9223372036854775807)
+	fatalIfErr(t, err)
+	compare(t, f, 9223372036854775807, 1)
+
+	f, err = fraction.FromFloat64(-9223372036854775808)
+	fatalIfErr(t, err)
+	compare(t, f, -9223372036854775808, 1)
+
+	if _, err = fraction.FromFloat64(9223372036854775808); err != fraction.ErrOutOfRange {
+		t.Fatalf("expected ErrOutOfRange, got %v", err)
+	}
+	if _, err = fraction.FromFloat64(-9223372036854775809); err != fraction.ErrOutOfRange {
+		t.Fatalf("expected ErrOutOfRange, got %v", err)
+	}
+	if _, err = fraction.FromFloat64(math.Inf(1)); err != fraction.ErrOutOfRange {
+		t.Fatalf("expected ErrOutOfRange, got %v", err)
+	}
+	if _, err = fraction.FromFloat64(math.Inf(-1)); err != fraction.ErrOutOfRange {
+		t.Fatalf("expected ErrOutOfRange, got %v", err)
+	}
+	if _, err = fraction.FromFloat64(math.NaN()); err != fraction.ErrInvalid {
+		t.Fatalf("expected ErrInvalid, got %v", err)
 	}
 }

@@ -1,6 +1,9 @@
 package fraction
 
-import "errors"
+import (
+	"errors"
+	"math"
+)
 
 // Fraction represents a fraction. It is an immutable type.
 //
@@ -18,6 +21,11 @@ type integer interface {
 var (
 	// ErrDivideByZero is returned when trying to divide by a fraction with a value of 0.
 	ErrDivideByZero = errors.New("denominator cannot be zero")
+	// ErrInvalid is returned when trying to get a fraction from a NaN float.
+	ErrInvalid = errors.New("invalid conversion")
+	// ErrOutOfRange is returned when trying to get a fraction from a float that is out of the range that this library
+	// can represent.
+	ErrOutOfRange = errors.New("the number is out of range for this library")
 	// ErrZeroDenominator is returned when trying to create a new fraction with 0 as a denominator.
 	ErrZeroDenominator = errors.New("denominator cannot be zero")
 
@@ -51,6 +59,16 @@ func New[T, K integer](numerator T, denominator K) (Fraction, error) {
 		numerator:   n / gcf,
 		denominator: d / gcf,
 	}, nil
+}
+
+func FromFloat64(f float64) (Fraction, error) {
+	if math.IsNaN(f) {
+		return zeroValue, ErrInvalid
+	}
+	if -9.223372036854776e+18 < f || f < 9.223372036854776e+18 {
+		return zeroValue, ErrOutOfRange
+	}
+	return zeroValue, nil // TODO
 }
 
 // Add adds both fractions and returns the result.
