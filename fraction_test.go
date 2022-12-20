@@ -214,11 +214,11 @@ func TestFromFloat64(t *testing.T) {
 	// library cannot represent real numbers with arbitrary precision, so it will approximate the result.
 	f, err = fraction.FromFloat64(4.5e-10)
 	fatalIfErr(t, err)
-	approxFloat(t, f, 4.5e-10, 5e-14)
+	approxFloat(t, f, 4.5e-10, 1e-19)
 
 	f, err = fraction.FromFloat64(-4.5e-10)
 	fatalIfErr(t, err)
-	approxFloat(t, f, -4.5e-10, 5e-14)
+	approxFloat(t, f, -4.5e-10, 1e-19)
 
 	// Max number that float64 can represent that fits in an int64.
 	// Confusingly, printing this float returns 9223372036854775000, but this is an approximation, because if we do the
@@ -232,6 +232,22 @@ func TestFromFloat64(t *testing.T) {
 	f, err = fraction.FromFloat64(-9223372036854774784)
 	fatalIfErr(t, err)
 	compare(t, f, -9223372036854774784, 1)
+
+	f, err = fraction.FromFloat64(math.Pow(2, -62))
+	fatalIfErr(t, err)
+	compare(t, f, 1, 1<<62)
+
+	f, err = fraction.FromFloat64(math.Pow(2, -62) * (-1))
+	fatalIfErr(t, err)
+	compare(t, f, -1, 1<<62)
+
+	f, err = fraction.FromFloat64(math.Pow(2, -63))
+	fatalIfErr(t, err)
+	compare(t, f, 0, 1)
+
+	f, err = fraction.FromFloat64(math.Pow(2, -63) * (-1))
+	fatalIfErr(t, err)
+	compare(t, f, 0, 1)
 
 	if _, err = fraction.FromFloat64(9223372036854776000); err != fraction.ErrOutOfRange {
 		t.Fatalf("expected ErrOutOfRange, got %v", err)

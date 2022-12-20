@@ -74,7 +74,7 @@ func FromFloat64(f float64) (Fraction, error) {
 	if f < -9.223372036854775e+18 || f > 9.223372036854775e+18 {
 		return zeroValue, ErrOutOfRange
 	}
-	if f > -1.0842021724855047e-19 && f < 1.0842021724855047e-19 {
+	if f > -2.168404344971009e-19 && f < 2.168404344971009e-19 {
 		return zeroValue, nil
 	}
 
@@ -104,12 +104,11 @@ func FromFloat64(f float64) (Fraction, error) {
 	// Shift that require larger shifts that what an int64 can hold, or larger than the mantissa itself, will be
 	// approximated by dividing the shift and splitting it between the numerator and denominator.
 	if shiftD > 62 {
-		shiftN = shiftD / 2
-		shiftD -= shiftN
-	}
-	if shiftN > 52 {
-		shiftD = shiftN / 2
-		shiftN -= shiftD
+		shiftD = 62
+		shiftN = shift - 62
+	} else if shiftN > 52 {
+		shiftN = 52
+		shiftD = shift - 52
 	}
 
 	numerator, denominator := int64(mantissa), int64(1)
