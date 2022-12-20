@@ -24,6 +24,14 @@ func compare(t *testing.T, f fraction.Fraction, numerator, denominator int64) {
 	}
 }
 
+func approxFloat(t *testing.T, fr fraction.Fraction, expected, precision float64) {
+	t.Helper()
+	fl := fr.Float64()
+	if fl < expected-precision || fl > expected+precision {
+		t.Fatalf("expected fraction around %v with %v of error, got %v", expected, precision, fl)
+	}
+}
+
 func TestNew(t *testing.T) {
 	_, err := fraction.New(-3, 5)
 	fatalIfErr(t, err)
@@ -184,42 +192,51 @@ func TestFromFloat64(t *testing.T) {
 	fatalIfErr(t, err)
 	compare(t, f, -1, 1)
 
-	f, err = fraction.FromFloat64(1.1)
+	f, err = fraction.FromFloat64(1.25)
 	fatalIfErr(t, err)
-	compare(t, f, 11, 10)
+	compare(t, f, 5, 4)
 
-	f, err = fraction.FromFloat64(-1.1)
+	f, err = fraction.FromFloat64(-1.25)
 	fatalIfErr(t, err)
-	compare(t, f, -11, 10)
+	compare(t, f, -5, 4)
 
 	f, err = fraction.FromFloat64(4.5e10)
 	fatalIfErr(t, err)
 	compare(t, f, 45000000000, 1)
 
-	f, err = fraction.FromFloat64(4.5e-10)
-	fatalIfErr(t, err)
-	compare(t, f, 9, 20000000000)
-
 	f, err = fraction.FromFloat64(-4.5e10)
 	fatalIfErr(t, err)
 	compare(t, f, -45000000000, 1)
 
+	// 4.5e-10 cannot be represented in a float64, the closest representation is
+	// 2^(-32) * 1.1110111011000111101111010101000100101011010101110010 (base 2), which is
+	// 4.4999999999999999700744318526239758082585495913008344359695911407470703125 * 10^(-10). The fractions in this
+	// library cannot represent real numbers with arbitrary precision, so it will approximate the result.
+	f, err = fraction.FromFloat64(4.5e-10)
+	fatalIfErr(t, err)
+	approxFloat(t, f, 4.5e-10, 5e-14)
+
 	f, err = fraction.FromFloat64(-4.5e-10)
 	fatalIfErr(t, err)
-	compare(t, f, -9, 20000000000)
+	approxFloat(t, f, -4.5e-10, 5e-14)
 
-	f, err = fraction.FromFloat64(9223372036854775807)
+	// Max number that float64 can represent that fits in an int64.
+	// Confusingly, printing this float returns 9223372036854775000, but this is an approximation, because if we do the
+	// correct conversion based on the binary data following the IEEE 754 standard, we can see that the number that the
+	// float holds it's 2^62 * 1.1111111111111111111111111111111111111111111111111111 (base 2), which is exactly
+	// 9223372036854774784.
+	f, err = fraction.FromFloat64(9223372036854774784)
 	fatalIfErr(t, err)
-	compare(t, f, 9223372036854775807, 1)
+	compare(t, f, 9223372036854774784, 1)
 
-	f, err = fraction.FromFloat64(-9223372036854775808)
+	f, err = fraction.FromFloat64(-9223372036854774784)
 	fatalIfErr(t, err)
-	compare(t, f, -9223372036854775808, 1)
+	compare(t, f, -9223372036854774784, 1)
 
-	if _, err = fraction.FromFloat64(9223372036854775808); err != fraction.ErrOutOfRange {
+	if _, err = fraction.FromFloat64(9223372036854776000); err != fraction.ErrOutOfRange {
 		t.Fatalf("expected ErrOutOfRange, got %v", err)
 	}
-	if _, err = fraction.FromFloat64(-9223372036854775809); err != fraction.ErrOutOfRange {
+	if _, err = fraction.FromFloat64(-9223372036854776000); err != fraction.ErrOutOfRange {
 		t.Fatalf("expected ErrOutOfRange, got %v", err)
 	}
 	if _, err = fraction.FromFloat64(math.Inf(1)); err != fraction.ErrOutOfRange {

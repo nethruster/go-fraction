@@ -61,14 +61,69 @@ func New[T, K integer](numerator T, denominator K) (Fraction, error) {
 	}, nil
 }
 
+// FromFloat64 tries to create an exact fraction from the Float64 provided. Keep in mind that the range of numbers that
+// floats can represent are bigger than what this fraction type that uses int64 internally can; in that case,
+// ErrOutOfRange will be returned. Also keep in mind that floats usually represent approximations to a number; this
+// function will try to approximate it as much as possible, but some precision may be lost.
+//
+// If a NaN is provided, ErrInvalid will be returned.
 func FromFloat64(f float64) (Fraction, error) {
 	if math.IsNaN(f) {
 		return zeroValue, ErrInvalid
 	}
-	if -9.223372036854776e+18 < f || f < 9.223372036854776e+18 {
+	if f < -9.223372036854775e+18 || f > 9.223372036854775e+18 {
 		return zeroValue, ErrOutOfRange
 	}
-	return zeroValue, nil // TODO
+	if f > -1.0842021724855047e-19 && f < 1.0842021724855047e-19 {
+		return zeroValue, nil
+	}
+
+	// Decompose float64
+	bits := math.Float64bits(f)
+	isNegative := bits&(1<<63) != 0
+	exp := int64((bits>>52)&(1<<11-1)) - 1023
+	mantissa := (bits & (1<<52 - 1)) | 1<<52 // Since we discarded tiny values, it'll never be denormalized.
+
+	// Amount of times to shift the mantissa to the right to compensate for the exponent
+	shift := 52 - exp
+
+	// Reduce shift and mantissa as far as we can
+	for mantissa&1 == 0 && shift > 0 {
+		mantissa >>= 1
+		shift--
+	}
+
+	// Choose whether to shift the numerator or denominator
+	var shiftN, shiftD int64 = 0, 0
+	if shift > 0 {
+		shiftD = shift
+	} else {
+		shiftN = shift
+	}
+
+	// Shift that require larger shifts that what an int64 can hold, or larger than the mantissa itself, will be
+	// approximated by dividing the shift and splitting it between the numerator and denominator.
+	if shiftD > 62 {
+		shiftN = shiftD / 2
+		shiftD -= shiftN
+	}
+	if shiftN > 52 {
+		shiftD = shiftN / 2
+		shiftN -= shiftD
+	}
+
+	numerator, denominator := int64(mantissa), int64(1)
+	denominator <<= shiftD
+	if shiftN < 0 {
+		numerator <<= -shiftN
+	} else {
+		numerator >>= shiftN
+	}
+
+	if isNegative {
+		numerator *= -1
+	}
+	return New(numerator, denominator)
 }
 
 // Add adds both fractions and returns the result.
