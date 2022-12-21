@@ -102,7 +102,7 @@ func FromFloat64(f float64) (Fraction, error) {
 	}
 
 	// Shift that require larger shifts that what an int64 can hold, or larger than the mantissa itself, will be
-	// approximated by dividing the shift and splitting it between the numerator and denominator.
+	// approximated splitting it between the numerator and denominator.
 	if shiftD > 62 {
 		shiftD = 62
 		shiftN = shift - 62
