@@ -30,12 +30,22 @@ f5 := f1.Multiply(f2)    // 1/3
 f6, err := f1.Divide(f2) // 3/4, nil
 ```
 
-You can also convert a fraction to a float, or vice versa, using the `Float64` and `FromFloat64` functions:
+You can also convert a fraction to a float, or vice versa, using `Float64` and `FromFloat64` functions:
 
 ```go
 floatValue := f1.Float64() // 0.5
 f7, err := fraction.FromFloat64(0.5) // 1/2, nil
 ```
+
+### 🤔 Rationale
+The Fraction type in go-fractions aims to provide a lightweight, primitive-like representation of fractions. As a
+result, it has limitations in terms of precision and can overflow when performing certain operations. If you need a
+type that can represent all rational numbers without regard for memory and CPU consumption, consider using the
+`big.Rat` type from the standard library.
+
+Please note that these limitations should not be an issue for most use cases, and go-fractions provides a convenient
+and efficient way to work with fractions in Go. However, it is important to be aware of these limitations and choose
+the appropriate type based on your specific needs.
 
 ## 📜 Documentation
 For more detailed documentation and a full list of functions, see the
