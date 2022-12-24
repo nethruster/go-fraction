@@ -30,10 +30,11 @@ f5 := f1.Multiply(f2)    // 1/3
 f6, err := f1.Divide(f2) // 3/4, nil
 ```
 
-You can also convert a fraction to a float using the Float64 function:
+You can also convert a fraction to a float, or vice versa, using the `Float64` and `FromFloat64` functions:
 
 ```go
 floatValue := f1.Float64() // 0.5
+f7, err := fraction.FromFloat64(0.5) // 1/2, nil
 ```
 
 ## 📜 Documentation
